@@ -522,3 +522,42 @@ The primary results are:
 | **Best teacher fusion** | **64.3%** | Training only | — |
 
 The result is a lightweight acoustic-scene classification system that achieves **state-of-the-art performance under edge-oriented constraints** while keeping the deployed model at approximately **60K parameters** and **30M MACs**.
+
+---
+# Code Structure
+
+The repository is organized into modular components for the compact student, teacher ensemble, learned fusion, knowledge distillation, augmentation, training, and evaluation.
+
+```text
+EchoFuse/
+├── echofuse/
+│   ├── models/
+│   │   ├── student.py              # Compact CP-Mobile student
+│   │   ├── fusion.py               # z1 and z2 fusion networks
+│   │   ├── ensemble.py             # Teacher-ensemble aggregation
+│   │   ├── device_router.py        # Device-aware model routing
+│   │   └── teachers/               # Teacher architectures
+│   ├── distillation/
+│   │   ├── logits.py               # Temperature-scaled distributions
+│   │   └── objective.py            # KD objective
+│   ├── training/
+│   │   ├── fusion.py               # Fusion-network training
+│   │   ├── kd.py                   # Student distillation
+│   │   ├── engine.py               # Shared training utilities
+│   │   └── pipeline.py             # End-to-end training pipeline
+│   ├── evaluation/                 # Testing, metrics, and deployment utilities
+│   ├── augmentations.py            # Device-robust audio augmentation
+│   ├── spectrum.py                 # Audio feature processing
+│   ├── checkpoints/                # TAU checkpoints
+│   └── config.py                   # Shared configuration
+│
+├── scripts/
+│   ├── train_fusion.py             # Train z1/z2 ensemble fusion
+│   ├── train_kd.py                 # Distill the ensemble into the student
+│   └── evaluate_student.py         # Evaluate the final compact model
+│
+└── docs/                            # Additional model and training documentation
+```
+
+The package separates **teacher construction, learned ensemble fusion, student distillation, and final evaluation** so that each stage can be inspected or modified independently while keeping the deployment model lightweight.
+
